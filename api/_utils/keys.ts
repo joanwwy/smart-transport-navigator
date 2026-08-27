@@ -55,7 +55,14 @@ export function getLtaAccountKey(res: any): string | null {
     process.env.LTA_DATAMAP_API_KEY ||
     process.env.LTA_DATAMALL_API_KEY ||
     process.env.LTA_ACCOUNT_KEY ||
-    process.env.ACCOUNT_KEY;
+    process.env.LTA_API_KEY ||
+    process.env.ACCOUNT_KEY ||
+    process.env.LTA_ONE_KEY ||
+    process.env.VITE_LTA_DATAMAP_API_KEY ||
+    process.env.VITE_LTA_DATAMALL_API_KEY ||
+    process.env.VITE_LTA_API_KEY ||
+    process.env.VITE_LTA_ACCOUNT_KEY ||
+    process.env.VITE_LTA_ONE_KEY;
 
   if (!key || key.trim() === '' || key === 'MY_LTA_ACCOUNT_KEY' || key === 'MY_LTA_DATAMAP_API_KEY') {
     sendJson(res, 500, { error: 'credential not configured' });
@@ -71,12 +78,20 @@ let tokenExpiryTimestamp: number = 0;
 /**
  * Retrieves a valid OneMap token adhering to strict credential guardrails:
  * - Credentials read ONLY from process.env inside api/
- * - Supports ONEMAP_API_KEY / ONEMAP_TOKEN directly, OR auto-mints using ONEMAP_EMAIL & ONEMAP_PASSWORD
+ * - Supports ONEMAP_API_KEY / ONEMAP_TOKEN / LTA_ONE_KEY directly, OR auto-mints using ONEMAP_EMAIL & ONEMAP_PASSWORD
  * - If credential is missing at runtime, return HTTP 500 with {"error":"credential not configured"}
  */
 export async function getOneMapToken(res: any): Promise<string | null> {
-  const directToken = process.env.ONEMAP_API_KEY || process.env.ONEMAP_TOKEN;
-  if (directToken && directToken.trim() !== '' && directToken !== 'MY_ONEMAP_API_KEY') {
+  const directToken =
+    process.env.ONEMAP_API_KEY ||
+    process.env.ONEMAP_TOKEN ||
+    process.env.LTA_ONE_KEY ||
+    process.env.ONEMAP_KEY ||
+    process.env.ONE_KEY ||
+    process.env.LTA_ONEMAP_KEY ||
+    process.env.VITE_ONEMAP_API_KEY ||
+    process.env.VITE_LTA_ONE_KEY;
+  if (directToken && directToken.trim() !== '' && directToken !== 'MY_ONEMAP_API_KEY' && directToken !== 'MY_LTA_ONE_KEY') {
     return directToken.trim();
   }
 

@@ -51,24 +51,44 @@ export function sendJson(res: any, statusCode: number, data: any) {
  * - If credential is missing at runtime, return HTTP 500 with {"error":"credential not configured"}
  */
 export function getLtaAccountKey(res: any): string | null {
-  const key =
-    process.env.LTA_DATAMAP_API_KEY ||
-    process.env.LTA_DATAMALL_API_KEY ||
-    process.env.LTA_ACCOUNT_KEY ||
-    process.env.LTA_API_KEY ||
-    process.env.ACCOUNT_KEY ||
-    process.env.LTA_ONE_KEY ||
-    process.env.VITE_LTA_DATAMAP_API_KEY ||
-    process.env.VITE_LTA_DATAMALL_API_KEY ||
-    process.env.VITE_LTA_API_KEY ||
-    process.env.VITE_LTA_ACCOUNT_KEY ||
-    process.env.VITE_LTA_ONE_KEY;
+  const envVars = [
+    process.env.LTA_DATAMAP_API_KEY,
+    process.env.LTA_DATAMALL_API_KEY,
+    process.env.LTA_ACCOUNT_KEY,
+    process.env.LTA_API_KEY,
+    process.env.ACCOUNT_KEY,
+    process.env.LTA_ONE_KEY,
+    process.env.VITE_LTA_DATAMAP_API_KEY,
+    process.env.VITE_LTA_DATAMALL_API_KEY,
+    process.env.VITE_LTA_API_KEY,
+    process.env.VITE_LTA_ACCOUNT_KEY,
+    process.env.VITE_LTA_ONE_KEY,
+  ];
 
-  if (!key || key.trim() === '' || key === 'MY_LTA_ACCOUNT_KEY' || key === 'MY_LTA_DATAMAP_API_KEY') {
-    sendJson(res, 500, { error: 'credential not configured' });
+  let rawKey = envVars.find((v) => v && typeof v === 'string' && v.trim() !== '');
+
+  // Strip wrapping quotes if user entered them in Vercel UI e.g. "xxx" or 'xxx'
+  if (rawKey) {
+    rawKey = rawKey.trim();
+    if ((rawKey.startsWith('"') && rawKey.endsWith('"')) || (rawKey.startsWith("'") && rawKey.endsWith("'"))) {
+      rawKey = rawKey.slice(1, -1).trim();
+    }
+  }
+
+  if (!rawKey || rawKey === '' || rawKey === 'MY_LTA_ACCOUNT_KEY' || rawKey === 'MY_LTA_DATAMAP_API_KEY' || rawKey === 'MY_LTA_ONE_KEY') {
+    sendJson(res, 500, {
+      error: 'credential not configured',
+      message: 'No active LTA AccountKey found in server environment variables. Please check Vercel environment settings and redeploy.',
+      checkedKeys: [
+        'LTA_DATAMAP_API_KEY',
+        'LTA_ACCOUNT_KEY',
+        'LTA_ONE_KEY',
+        'LTA_API_KEY'
+      ]
+    });
     return null;
   }
-  return key.trim();
+  return rawKey;
 }
 
 // In-memory token cache for OneMap across serverless invocations

@@ -10,7 +10,11 @@ const router = Router();
  *   rather than calling the provider without it.
  */
 function getAccountKey(res: Response): string | null {
-  const key = process.env.LTA_ACCOUNT_KEY || process.env.ACCOUNT_KEY || process.env.LTA_DATAMALL_API_KEY;
+  const key =
+    process.env.LTA_DATAMAP_API_KEY ||
+    process.env.LTA_DATAMALL_API_KEY ||
+    process.env.LTA_ACCOUNT_KEY ||
+    process.env.ACCOUNT_KEY;
   if (!key || key.trim() === '' || key === 'MY_LTA_ACCOUNT_KEY') {
     res.status(500).json({ error: 'credential not configured' });
     return null;
@@ -23,7 +27,11 @@ function getAccountKey(res: Response): string | null {
  * GET /api/lta/status
  */
 router.get('/status', (_req: Request, res: Response) => {
-  const key = process.env.LTA_ACCOUNT_KEY || process.env.ACCOUNT_KEY || process.env.LTA_DATAMALL_API_KEY;
+  const key =
+    process.env.LTA_DATAMAP_API_KEY ||
+    process.env.LTA_DATAMALL_API_KEY ||
+    process.env.LTA_ACCOUNT_KEY ||
+    process.env.ACCOUNT_KEY;
   const configured = !!(key && key.trim() !== '' && key !== 'MY_LTA_ACCOUNT_KEY');
   res.json({
     service: 'LTA DataMall API',

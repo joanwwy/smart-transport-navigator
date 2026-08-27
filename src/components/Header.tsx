@@ -81,6 +81,17 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               )}
             </button>
+            <button
+              onClick={() => onTabChange('community')}
+              id="tab-community"
+              className={`h-full flex items-center gap-1.5 px-2 text-[13px] font-semibold transition-all border-b-2 ${
+                activeTab === 'community'
+                  ? 'text-primary border-primary'
+                  : 'text-on-surface-variant hover:text-on-surface border-transparent hover:border-outline-variant'
+              }`}
+            >
+              Community
+            </button>
           </nav>
         </div>
 

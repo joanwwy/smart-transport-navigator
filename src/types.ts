@@ -1,7 +1,7 @@
 export type TransportMode = 'mixed' | 'bus_only' | 'train_only';
 export type ScheduleType = 'depart' | 'arrive';
 export type SortOption = 'best_match' | 'fastest' | 'least_transfers' | 'least_walking';
-export type TabType = 'plan' | 'live_status' | 'saved' | 'alerts';
+export type TabType = 'plan' | 'live_status' | 'saved' | 'alerts' | 'community';
 
 export interface TransitSegment {
   id: string;

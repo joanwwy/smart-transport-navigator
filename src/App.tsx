@@ -15,6 +15,7 @@ import { RouteDetailModal } from './components/RouteDetailModal';
 import { LiveStatusView } from './components/LiveStatusView';
 import { SavedRoutesView } from './components/SavedRoutesView';
 import { AlertsView } from './components/AlertsView';
+import { CommunityDiscussionsView } from './components/CommunityDiscussionsView';
 import { AppModals } from './components/AppModals';
 
 export default function App() {
@@ -183,6 +184,8 @@ export default function App() {
         )}
 
         {activeTab === 'alerts' && <AlertsView alerts={ACTIVE_ALERTS} />}
+
+        {activeTab === 'community' && <CommunityDiscussionsView />}
       </main>
 
       {/* Mobile Bottom Navigation Bar */}

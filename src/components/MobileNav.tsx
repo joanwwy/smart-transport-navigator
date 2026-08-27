@@ -82,6 +82,22 @@ export const MobileNav: React.FC<MobileNavProps> = ({
         </div>
         <span className="text-[11px] uppercase tracking-wider font-semibold">Alerts</span>
       </button>
+
+      <button
+        onClick={() => onTabChange('community')}
+        id="mobile-nav-community"
+        className={`flex flex-col items-center gap-0.5 py-1 px-3 ${
+          activeTab === 'community' ? 'text-primary font-bold' : 'text-on-surface-variant'
+        }`}
+      >
+        <span 
+          className="material-symbols-outlined text-[24px]"
+          style={activeTab === 'community' ? { fontVariationSettings: "'FILL' 1" } : {}}
+        >
+          forum
+        </span>
+        <span className="text-[11px] uppercase tracking-wider font-semibold">Community</span>
+      </button>
     </nav>
   );
 };

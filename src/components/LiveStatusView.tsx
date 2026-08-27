@@ -107,12 +107,13 @@ export const LiveStatusView: React.FC = () => {
         const errJson = await res.json().catch(() => ({}));
         if (errJson.error === 'credential not configured') {
           setApiConnected(false);
-          setErrorMessage('LTA AccountKey not detected in server environment variables. Ensure variable is assigned to Production environment in Vercel.');
+          setErrorMessage(errJson.message || 'LTA AccountKey not detected in server environment variables. Ensure variable is assigned to Production in Vercel and redeploy.');
         } else if (res.status === 401 || errJson.details?.includes('401') || errJson.error?.includes('401')) {
           setApiConnected(false);
-          setErrorMessage('LTA DataMall rejected the AccountKey (401 Unauthorized). Please ensure your key is activated on DataMall portal.');
+          setErrorMessage('LTA DataMall rejected the AccountKey (401 Unauthorized). Please check your key on the LTA DataMall portal.');
         } else {
-          setErrorMessage(errJson.error || errJson.message || `HTTP ${res.status} Error`);
+          const detailedMsg = errJson.details || errJson.message || errJson.error || `HTTP ${res.status} Error`;
+          setErrorMessage(typeof detailedMsg === 'string' ? detailedMsg : JSON.stringify(detailedMsg));
         }
         setBusApiData(null);
       } else {

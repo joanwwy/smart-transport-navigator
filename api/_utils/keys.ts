@@ -52,43 +52,60 @@ export function sendJson(res: any, statusCode: number, data: any) {
  */
 export function getLtaAccountKey(res: any): string | null {
   const envVars = [
-    process.env.LTA_DATAMAP_API_KEY,
-    process.env.LTA_DATAMALL_API_KEY,
     process.env.LTA_ACCOUNT_KEY,
+    process.env.LTA_DATAMALL_API_KEY,
+    process.env.LTA_DATAMAP_API_KEY,
     process.env.LTA_API_KEY,
     process.env.ACCOUNT_KEY,
     process.env.LTA_ONE_KEY,
-    process.env.VITE_LTA_DATAMAP_API_KEY,
-    process.env.VITE_LTA_DATAMALL_API_KEY,
-    process.env.VITE_LTA_API_KEY,
     process.env.VITE_LTA_ACCOUNT_KEY,
+    process.env.VITE_LTA_DATAMALL_API_KEY,
+    process.env.VITE_LTA_DATAMAP_API_KEY,
+    process.env.VITE_LTA_API_KEY,
     process.env.VITE_LTA_ONE_KEY,
   ];
 
-  let rawKey = envVars.find((v) => v && typeof v === 'string' && v.trim() !== '');
+  const placeholders = new Set([
+    'MY_LTA_ACCOUNT_KEY',
+    'MY_LTA_DATAMAP_API_KEY',
+    'MY_LTA_ONE_KEY',
+    'YOUR_API_KEY',
+    'YOUR_ACCOUNT_KEY',
+    'YOUR_LTA_KEY',
+    'PLACEHOLDER',
+    'UNDEFINED',
+    'NULL',
+  ]);
 
-  // Strip wrapping quotes if user entered them in Vercel UI e.g. "xxx" or 'xxx'
-  if (rawKey) {
-    rawKey = rawKey.trim();
-    if ((rawKey.startsWith('"') && rawKey.endsWith('"')) || (rawKey.startsWith("'") && rawKey.endsWith("'"))) {
-      rawKey = rawKey.slice(1, -1).trim();
+  let validKey: string | null = null;
+
+  for (const item of envVars) {
+    if (!item || typeof item !== 'string') continue;
+    let trimmed = item.trim();
+    if ((trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+      trimmed = trimmed.slice(1, -1).trim();
+    }
+    if (trimmed.length > 5 && !placeholders.has(trimmed.toUpperCase())) {
+      validKey = trimmed;
+      break;
     }
   }
 
-  if (!rawKey || rawKey === '' || rawKey === 'MY_LTA_ACCOUNT_KEY' || rawKey === 'MY_LTA_DATAMAP_API_KEY' || rawKey === 'MY_LTA_ONE_KEY') {
+  if (!validKey) {
     sendJson(res, 500, {
       error: 'credential not configured',
       message: 'No active LTA AccountKey found in server environment variables. Please check Vercel environment settings and redeploy.',
       checkedKeys: [
-        'LTA_DATAMAP_API_KEY',
         'LTA_ACCOUNT_KEY',
+        'LTA_DATAMAP_API_KEY',
+        'LTA_DATAMALL_API_KEY',
         'LTA_ONE_KEY',
         'LTA_API_KEY'
       ]
     });
     return null;
   }
-  return rawKey;
+  return validKey;
 }
 
 // In-memory token cache for OneMap across serverless invocations

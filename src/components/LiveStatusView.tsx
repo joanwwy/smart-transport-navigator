@@ -241,15 +241,20 @@ export const LiveStatusView: React.FC = () => {
             </div>
 
             <div className="flex items-center justify-between lg:justify-end gap-3 text-xs text-[#727783] border-t lg:border-t-0 pt-2 lg:pt-0 border-[#f1ecf2]">
-              {apiConnected ? (
+              {apiConnected === true ? (
                 <div className="flex items-center gap-1.5 bg-[#83fc94]/30 text-[#00752d] px-2.5 py-1 rounded-md font-bold text-[11px]">
                   <span className="w-2 h-2 rounded-full bg-[#006e2a] animate-pulse"></span>
                   LTA DataMall v3 Live Stream
                 </div>
-              ) : (
+              ) : apiConnected === false ? (
                 <div className="flex items-center gap-1.5 bg-[#ffdad6] text-[#93000a] px-2.5 py-1 rounded-md font-medium text-[11px]">
                   <span className="material-symbols-outlined text-[14px]">lock</span>
-                  LTA AccountKey: Unset (Sample Active)
+                  LTA Stream Offline (Sample Active)
+                </div>
+              ) : (
+                <div className="flex items-center gap-1.5 bg-[#f1ecf2] text-[#414751] px-2.5 py-1 rounded-md font-medium text-[11px]">
+                  <span className="material-symbols-outlined text-[14px] animate-spin">progress_activity</span>
+                  Connecting to LTA DataMall...
                 </div>
               )}
               {lastUpdatedTime && (
@@ -260,12 +265,12 @@ export const LiveStatusView: React.FC = () => {
 
           {/* Error / Notice Banner */}
           {errorMessage && (
-            <div className="bg-[#f1ecf2] border border-[#c1c6d3] rounded-xl p-3 text-xs text-[#414751] flex items-center justify-between">
+            <div className="bg-[#fff0ee] border border-[#ffb4ab] rounded-xl p-3 text-xs text-[#93000a] flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#004481] text-[18px]">info</span>
+                <span className="material-symbols-outlined text-[#ba1a1a] text-[18px]">warning</span>
                 <span>{errorMessage}</span>
               </div>
-              <span className="text-[10px] font-mono text-[#727783]">Backend Guardrail Active</span>
+              <span className="text-[10px] font-mono text-[#93000a] font-semibold">Diagnostic Report</span>
             </div>
           )}
 

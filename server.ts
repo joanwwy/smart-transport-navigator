@@ -3,6 +3,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { createServer as createViteServer } from 'vite';
 import ltaRouter from './api/lta';
+import onemapRouter from './api/onemap';
 
 dotenv.config();
 
@@ -12,8 +13,9 @@ async function startServer() {
 
   app.use(express.json());
 
-  // Mount LTA DataMall API backend routes
+  // Mount API backend routes
   app.use('/api/lta', ltaRouter);
+  app.use('/api/onemap', onemapRouter);
 
   // Health check endpoint
   app.get('/api/health', (_req, res) => {
